@@ -1,0 +1,16 @@
+[
+{
+  "modid": "Bizzycola_ICBMComponent",
+  "name": "OC ICBM Component",
+  "description": "OC ICBM Component",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Bizzycola, Michiyo"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
