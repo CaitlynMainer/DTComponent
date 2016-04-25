@@ -1,14 +1,14 @@
-ICBMComponent
+DTComponent
 =============
 
-An OpenComputers Component block for the ICBM mod.
+An OpenComputers Component block for the DefenseTech mod.
 
 
 Methods
 -------
 **(bool)isConnected()**
 
---Returns true if the block is connected(placed next to) an ICBM launch controller.
+--Returns true if the block is connected(placed next to) an DefenseTech ICBM launch controller.
 
 
 **(bool)launch()**
@@ -41,4 +41,4 @@ Methods
 
 Downloads
 ---------
-Latest Builds: http://pc-logix.com/mods/ICBMComponent/
+Latest Builds: http://pc-logix.com/mods/DTComponent/
