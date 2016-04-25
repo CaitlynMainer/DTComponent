@@ -1,4 +1,4 @@
-package bizzycola.icbmcomponent;
+package pcl.dtcomponent;
 
 /**
  * This file is automatically updated by Jenkins as part of the CI build script
@@ -7,8 +7,8 @@ package bizzycola.icbmcomponent;
  * @author AfterLifeLochie, stolen from LanteaCraft, another fine PC-Logix Minecraft mod.
  */
 public class BuildInfo {
-	public static final String modName = "OC ICBM Component";
-	public static final String modID = "Bizzycola_ICBMComponent";
+	public static final String modName = "OC DefenseTech Component";
+	public static final String modID = "DTComponent";
 
 	public static final String versionNumber = "@VERSION@";
 	public static final String buildNumber = "@BUILD@";

@@ -1,4 +1,4 @@
-package bizzycola.icbmcomponent;
+package pcl.dtcomponent;
 
 
 import net.minecraft.block.BlockContainer;
@@ -9,20 +9,19 @@ import net.minecraft.world.World;
 
 public class BlockPeripheralBlock extends BlockContainer
 {
-	public BlockPeripheralBlock(int blockID, Material blockMaterial)
+	public BlockPeripheralBlock(Material blockMaterial)
 	{
-		super(blockID, blockMaterial);
+		super(blockMaterial);
 		//setCreativeTab(li.cil.oc.api.CreativeTab.Instance);
-		setUnlocalizedName("componentBlock");
-		setTextureName("icbmcomponent:componentBlock");
+		//setUnlocalizedName("componentBlock");
+		//setTextureName("icbmcomponent:componentBlock");
 	}
 	
 	
 	/*Tile entity stuff*/
-	
+
 	@Override
-	public TileEntity createNewTileEntity(World world)
-	{
+	public TileEntity createNewTileEntity(World world, int p_149915_2_) {
 		return new TileEntityPeripheralBlock();
 	}
 }

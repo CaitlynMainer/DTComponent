@@ -1,20 +1,19 @@
-package bizzycola.icbmcomponent;
+package pcl.dtcomponent;
 
 /**
  * @author Caitlyn
  *
  */
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class ItemPeripheralBlock extends ItemBlock {
 
-	public ItemPeripheralBlock(int id) {
-		super(id);
-		if(ICBMComponent.cfg.hardMode)
-			setHasSubtypes(true);
-		setUnlocalizedName("PeripheralItemBlock");
+	public ItemPeripheralBlock(Block p_i45328_1_) {
+		super(p_i45328_1_);
+		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

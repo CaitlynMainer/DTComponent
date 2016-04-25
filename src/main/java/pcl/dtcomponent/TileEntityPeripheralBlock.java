@@ -1,32 +1,35 @@
-package bizzycola.icbmcomponent;
+package pcl.dtcomponent;
 
 import li.cil.oc.api.Network;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Analyzable;
-import li.cil.oc.api.network.Arguments;
-import li.cil.oc.api.network.Callback;
 import li.cil.oc.api.network.ComponentConnector;
-import li.cil.oc.api.network.Context;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.TileEntityEnvironment;
+import mekanism.api.Pos3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
-import resonant.api.explosion.ILauncherController;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-import universalelectricity.api.energy.IEnergyContainer;
-import universalelectricity.api.vector.Vector3;
+import defense.api.ILauncherContainer;
+import defense.api.ILauncherController;
+import defense.core.Vector2;
 
 @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
 public class TileEntityPeripheralBlock extends TileEntity implements Environment, Analyzable //implements IPeripheral
 {
 	World _world;
-	ILauncherController controller;
+	ILauncherContainer controller;
 	TileEntity tile = null;
 	Integer launcherTier = null;
 	Integer  interfaceTier = null;
@@ -41,11 +44,11 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 	public Node[] onAnalyze(EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		String chtMsg = (controller == null) ? "No ICBM launch controller connected." : "ICBM launch controller connected.";
-		player.addChatMessage(chtMsg);
+		player.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "" + chtMsg));
 		return null;
 	}
 
-	private ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("icbm_bridge").withConnector(32).create();
+	private ComponentConnector node = Network.newNode(this, Visibility.Network).withComponent("dt_bridge").withConnector(32).create();
 
 	@Override
 	public Node node() {
@@ -77,26 +80,27 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		}
 
 		for(ForgeDirection direction: ForgeDirection.VALID_DIRECTIONS){
-			tile = worldObj.getBlockTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+			tile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+			System.out.println(this.controller.getController().getLauncherType().name());
 			if(tile instanceof ILauncherController){
 				if(!(this.controller instanceof ILauncherController))
 				{
 
-					if(ICBMComponent.cfg.hardMode) {
-						this.controller = (ILauncherController)tile;
+					if(DTComponent.cfg.hardMode) {
+						this.controller = (ILauncherContainer)tile;
 						
-						if (this.getBlockMetadata() == 0 && this.controller.getEnergyCapacity(direction) <= 50000) {
-							this.controller = (ILauncherController)tile;
-						} else if (this.getBlockMetadata() == 1 && this.controller.getEnergyCapacity(direction)<= 80000) {
-							this.controller = (ILauncherController)tile;
-						} else if (this.getBlockMetadata() == 2 && this.controller.getEnergyCapacity(direction) <= 100000) {
-							this.controller = (ILauncherController)tile;
-						} else {
-							this.controller = null;
-						}
+//						if (this.getBlockMetadata() == 0 && this.controller.getEnergyCapacity(direction) <= 50000) {
+//							this.controller = (ILauncherContainer)tile;
+//						} else if (this.getBlockMetadata() == 1 && this.controller.getEnergyCapacity(direction)<= 80000) {
+//							this.controller = (ILauncherContainer)tile;
+//						} else if (this.getBlockMetadata() == 2 && this.controller.getEnergyCapacity(direction) <= 100000) {
+//							this.controller = (ILauncherContainer)tile;
+//						} else {
+//							this.controller = null;
+//						}
 
 					} else {
-						this.controller = (ILauncherController)tile;
+						this.controller = (ILauncherContainer)tile;
 					}
 				}
 			}
@@ -135,15 +139,15 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		if(controller == null)
 			throw new Exception("Not connected to an ICBM launch controller(try using isConnected() first).");
 		
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				controller.launch();
+				controller.getController().launch();
 				return new Object[] { true };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
-		controller.launch();
+		controller.getController().launch();
 		return new Object[] { true };
 	}
 
@@ -154,14 +158,14 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		if(controller == null)
 			throw new Exception("Not connected to an ICBM launch controller(try using isConnected() first).");
 
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				return new Object[]{ controller.canLaunch() };
+				return new Object[]{ controller.getController().canLaunch() };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
-		return new Object[]{ controller.canLaunch() };
+		return new Object[]{ controller.getController().canLaunch() };
 		
 	}
 
@@ -172,14 +176,14 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		if(controller == null)
 			throw new Exception("Not connected to an ICBM launch controller(try using isConnected() first).");
 
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				return new Object[]{ controller.getStatus() };
+				return new Object[]{ controller.getController().getStatus() };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
-		return new Object[]{ controller.getStatus() };
+		return new Object[]{ controller.getController().getStatus() };
 	}
 
 	@Callback
@@ -190,14 +194,14 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 			throw new Exception("Not connected to an ICBM launch controller(try using isConnected() first).");
 
 		//TODO
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				return new Object[]{ controller.canLaunch() };
+				return new Object[]{ controller.getController().getMissile().getExplosiveType().getMissileName() };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
-		return new Object[]{ controller.getMissile().getExplosiveType().getMissileName() };
+		return new Object[]{ controller.getController().getMissile().getExplosiveType().getMissileName() };
 	}
 
 	@Callback
@@ -207,17 +211,17 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		if(controller == null)
 			throw new Exception("Not connected to an ICBM launch controller(try using isConnected() first).");
 		
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				Vector3 pos = controller.getTarget();
-				return new Object[]{ pos.x(), pos.y(), pos.z() };
+				Pos3D pos = controller.getController().getTarget();
+				return new Object[]{ pos.xPos, pos.yPos, pos.zPos };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
 		
-		Vector3 pos = controller.getTarget();
-		return new Object[]{ pos.x(), pos.y(), pos.z() };
+		Pos3D pos = controller.getController().getTarget();
+		return new Object[]{ pos.xPos, pos.yPos, pos.zPos };
 	}
 
 	@Callback
@@ -233,19 +237,19 @@ public class TileEntityPeripheralBlock extends TileEntity implements Environment
 		}
 		
 		
-		if (ICBMComponent.cfg.hardMode) {
+		if (DTComponent.cfg.hardMode) {
 			if (node.changeBuffer(-5) == 0) {
-				Vector3 pos = new Vector3(args.checkDouble(0), args.checkDouble(1), args.checkDouble(2));
-				controller.setTarget(pos);
-				return new Object[]{ pos.x(), pos.y(), pos.z() };
+				Pos3D pos = new Pos3D(args.checkDouble(0), args.checkDouble(1), args.checkDouble(2));
+				controller.getController().setTarget(pos);
+				return new Object[]{ pos.xPos, pos.yPos, pos.zPos };
 			} else {
 				throw new Exception("Not enough power in OC Network.");
 			}
 		}
 		
-		Vector3 pos = new Vector3(args.checkDouble(0), args.checkDouble(1), args.checkDouble(2));
-		controller.setTarget(pos);
-		return new Object[]{ pos.x(), pos.y(), pos.z() };
+		Pos3D pos = new Pos3D(args.checkDouble(0), args.checkDouble(1), args.checkDouble(2));
+		controller.getController().setTarget(pos);
+		return new Object[]{ pos.xPos, pos.yPos, pos.zPos };
 	}
 
 

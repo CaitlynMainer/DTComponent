@@ -1,7 +1,9 @@
-package bizzycola.icbmcomponent;
+package pcl.dtcomponent;
 
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+import java.io.File;
+
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
 
 /**
  * @author Caitlyn
@@ -9,16 +11,14 @@ import net.minecraftforge.common.Property;
  */
 public class Config
 {
-    private int defaultComponentID = 2249;
-    public final int componentID;
-    
+	public static boolean enableMUD = true;
     private boolean defaultHardMode = false;
     public final boolean hardMode;
 
     public Config(Configuration config)
     {
         config.load();
-        componentID = config.get("blocks", "ComponentID", defaultComponentID).getInt(defaultComponentID);
+		enableMUD = config.get("general", "enableMUD", enableMUD, "Automatically check for mod updates.").getBoolean();
         hardMode = config.get("options", "HardMode", defaultHardMode, "Enable hard mode? Enables power usage, and multiple tiers of interfaces").getBoolean(defaultHardMode);
         if( config.hasChanged() )
         {
