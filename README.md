@@ -8,7 +8,7 @@ Methods
 -------
 **(bool)isConnected()**
 
---Returns true if the block is connected(placed next to) an DefenseTech ICBM launch controller.
+--Returns true if the block is connected(placed next to) a DefenseTech ICBM launch controller.
 
 
 **(bool)launch()**
